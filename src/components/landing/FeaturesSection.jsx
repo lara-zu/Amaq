@@ -40,10 +40,10 @@ const features = [
     border: "border-purple-200",
   },
   {
-    icon: "🔒",
-    title: "Role-Based Access",
+    icon: "🎓",
+    title: "Grade-Based Content",
     description:
-      "Teachers get a clean admin dashboard. Students get the underwater world. One platform, two completely different experiences.",
+      "Lessons and quizzes are organized by grade — 5, 6, 7, and 8. Students only see content for their level. Teachers assign to exactly who needs it.",
     color: "bg-brand-cream text-amber-700",
     border: "border-amber-200",
   },
@@ -64,8 +64,8 @@ const FeaturesSection = () => {
             <span className="text-brand-blue">Endless learning.</span>
           </h2>
           <p className="text-gray-500 text-lg max-w-xl mx-auto">
-            Amaq brings everything a math classroom needs into one beautifully
-            designed app.
+            Built specifically for grades 5 through 8 — Amaq brings everything
+            a math classroom needs into one beautifully designed app.
           </p>
         </div>
 

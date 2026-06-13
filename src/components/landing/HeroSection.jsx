@@ -31,7 +31,7 @@ const HeroSection = () => {
         {/* Badge */}
         <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm border border-white/25 text-white text-xs font-semibold px-4 py-2 rounded-full mb-8 tracking-wide uppercase">
           <span className="w-2 h-2 rounded-full bg-brand-green animate-pulse" />
-          The Math Learning Platform Built for Students & Teachers
+          Math Learning Platform · Grades 5 – 8
         </div>
 
         {/* Headline */}
@@ -59,8 +59,8 @@ const HeroSection = () => {
 
         {/* Subtext */}
         <p className="text-white/75 text-lg md:text-xl max-w-2xl mx-auto mb-12 leading-relaxed">
-          Amaq turns math into an immersive underwater journey for students — and gives teachers
-          a powerful, simple dashboard to manage everything.
+          Amaq turns math into an immersive underwater journey for grade 5 to 8 students —
+          and gives teachers a powerful dashboard to manage lessons, quizzes, and every student's progress.
         </p>
 
         {/* CTA Buttons */}

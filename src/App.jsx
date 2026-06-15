@@ -10,6 +10,7 @@ import StudentsPage from "./pages/teacher/StudentsPage";
 import LessonsPage from "./pages/teacher/LessonsPage";
 import QuizzesPage from "./pages/teacher/QuizzesPage";
 import ProfilePage from "./pages/teacher/ProfilePage";
+import StudentHomePage from "./pages/student/StudentHomePage";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -96,8 +97,12 @@ function App() {
           }
         />
 
-        {/* Student routes — coming soon */}
-        <Route path="/home" element={<p className="p-10">Student home coming soon</p>} />
+        {/* Student routes */}
+        <Route path="/home" element={
+          <ProtectedRoute user={user} requiredRole="student">
+            <StudentHomePage user={user} />
+          </ProtectedRoute>
+        } />
 
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>

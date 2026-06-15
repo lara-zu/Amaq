@@ -1,13 +1,31 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+@import "tailwindcss";
+@source "../src";
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@theme {
+  --color-brand-blue: #3368C6;
+  --color-brand-pink: #DD6584;
+  --color-brand-cream: #E7D4B0;
+  --color-brand-green: #689931;
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+  --font-sans: 'Inter', sans-serif;
+
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-float-slow: float 9s ease-in-out infinite;
+  --animate-float-slower: float 12s ease-in-out infinite;
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+  }
+}
+
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
 }
 
 html {
@@ -26,35 +44,29 @@ body {
   min-height: 100vh;
 }
 
-/* Scroll animation classes */
 .reveal {
   opacity: 0;
   transform: translateY(50px);
   transition: opacity 0.8s ease, transform 0.8s ease;
 }
-
 .reveal.visible {
   opacity: 1;
   transform: translateY(0);
 }
-
 .reveal-left {
   opacity: 0;
   transform: translateX(-60px);
   transition: opacity 0.8s ease, transform 0.8s ease;
 }
-
 .reveal-left.visible {
   opacity: 1;
   transform: translateX(0);
 }
-
 .reveal-right {
   opacity: 0;
   transform: translateX(60px);
   transition: opacity 0.8s ease, transform 0.8s ease;
 }
-
 .reveal-right.visible {
   opacity: 1;
   transform: translateX(0);

@@ -9,9 +9,15 @@ import DashboardPage from "./pages/teacher/DashboardPage";
 import StudentsPage from "./pages/teacher/StudentsPage";
 import LessonsPage from "./pages/teacher/LessonsPage";
 import QuizzesPage from "./pages/teacher/QuizzesPage";
+import ProfilePage from "./pages/teacher/ProfilePage";
 
 function App() {
   const [user, setUser] = useState(null);
+
+  const handleUpdateUser = (updatedUser) => {
+    setUser(updatedUser);
+    localStorage.setItem("user", JSON.stringify(updatedUser));
+  };
 
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
@@ -74,6 +80,17 @@ function App() {
             <ProtectedRoute user={user} requiredRole="teacher">
               <TeacherLayout user={user} onLogout={handleLogout}>
                 <QuizzesPage user={user} />
+              </TeacherLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute user={user} requiredRole="teacher">
+              <TeacherLayout user={user} onLogout={handleLogout}>
+                <ProfilePage user={user} onUpdateUser={handleUpdateUser} />
               </TeacherLayout>
             </ProtectedRoute>
           }

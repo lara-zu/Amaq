@@ -9,6 +9,10 @@ const LoginPage = ({ onLogin }) => {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("student");
   const [grade, setGrade] = useState(5);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [birthday, setBirthday] = useState("");
+  const [avatar, setAvatar] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -19,8 +23,21 @@ const LoginPage = ({ onLogin }) => {
     navigate(userData.role === "teacher" ? "/dashboard" : "/home");
   };
 
+  const handleAvatarChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onloadend = () => setAvatar(reader.result);
+    reader.readAsDataURL(file);
+  };
+
   const mockLogin = () => {
-    redirect({ id: 1, email, password, role, grade: role === "student" ? grade : null, stars: 0 });
+    redirect({
+      id: 1, email, password, role,
+      firstName, lastName, birthday, avatar,
+      grade: role === "student" ? grade : null,
+      stars: 0,
+    });
   };
 
   const handleLogin = async () => {
@@ -45,13 +62,19 @@ const LoginPage = ({ onLogin }) => {
 
   const handleSignup = async () => {
     setError(null);
-    if (!email || !password) { setError("Please enter your email and password."); return; }
+    if (!email || !password || !firstName || !lastName) {
+      setError("Please fill in all required fields.");
+      return;
+    }
     setLoading(true);
     try {
       const res = await fetch("http://localhost:5000/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, role, grade: role === "student" ? grade : null }),
+        body: JSON.stringify({
+          email, password, role, firstName, lastName, birthday, avatar,
+          grade: role === "student" ? grade : null,
+        }),
       });
       const data = await res.json();
       if (!res.ok) setError(data.message);
@@ -165,9 +188,63 @@ const LoginPage = ({ onLogin }) => {
             {/* Signup-only fields */}
             {!isLogin && (
               <>
+                {/* Profile picture */}
+                <div className="flex flex-col items-center gap-3">
+                  <div className="relative">
+                    <div className="w-20 h-20 rounded-2xl bg-gray-100 border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden">
+                      {avatar ? (
+                        <img src={avatar} alt="avatar" className="w-full h-full object-cover" />
+                      ) : (
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+                      )}
+                    </div>
+                    <label className="absolute -bottom-2 -right-2 w-7 h-7 bg-brand-blue rounded-lg flex items-center justify-center cursor-pointer shadow-md hover:bg-blue-700 transition-colors">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                      <input type="file" accept="image/*" onChange={handleAvatarChange} className="hidden" />
+                    </label>
+                  </div>
+                  <p className="text-xs text-gray-400">Upload a profile photo</p>
+                </div>
+
+                {/* First + Last name */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">First name</label>
+                    <input
+                      type="text"
+                      placeholder="Lara"
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:outline-none focus:border-brand-blue transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Last name</label>
+                    <input
+                      type="text"
+                      placeholder="Zubaidi"
+                      value={lastName}
+                      onChange={(e) => setLastName(e.target.value)}
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:outline-none focus:border-brand-blue transition-colors"
+                    />
+                  </div>
+                </div>
+
+                {/* Birthday */}
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Birthday</label>
+                  <input
+                    type="date"
+                    value={birthday}
+                    onChange={(e) => setBirthday(e.target.value)}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:outline-none focus:border-brand-blue transition-colors text-gray-700"
+                  />
+                </div>
+
                 <div>
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">I am a...</label>
                   <div className="grid grid-cols-2 gap-3">
+
                     {["student", "teacher"].map((r) => (
                       <button
                         key={r}

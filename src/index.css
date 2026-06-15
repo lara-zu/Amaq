@@ -1,13 +1,31 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+@import "tailwindcss";
+@source "../src";
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@theme {
+  --color-brand-blue: #3368C6;
+  --color-brand-pink: #DD6584;
+  --color-brand-cream: #E7D4B0;
+  --color-brand-green: #689931;
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+  --font-sans: 'Inter', sans-serif;
+
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-float-slow: float 9s ease-in-out infinite;
+  --animate-float-slower: float 12s ease-in-out infinite;
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+  }
+}
+
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
 }
 
 html {
@@ -26,35 +44,29 @@ body {
   min-height: 100vh;
 }
 
-/* Scroll animation classes */
 .reveal {
   opacity: 0;
   transform: translateY(50px);
   transition: opacity 0.8s ease, transform 0.8s ease;
 }
-
 .reveal.visible {
   opacity: 1;
   transform: translateY(0);
 }
-
 .reveal-left {
   opacity: 0;
   transform: translateX(-60px);
   transition: opacity 0.8s ease, transform 0.8s ease;
 }
-
 .reveal-left.visible {
   opacity: 1;
   transform: translateX(0);
 }
-
 .reveal-right {
   opacity: 0;
   transform: translateX(60px);
   transition: opacity 0.8s ease, transform 0.8s ease;
 }
-
 .reveal-right.visible {
   opacity: 1;
   transform: translateX(0);
@@ -64,3 +76,150 @@ body {
 .reveal-delay-2 { transition-delay: 0.2s; }
 .reveal-delay-3 { transition-delay: 0.3s; }
 .reveal-delay-4 { transition-delay: 0.4s; }
+
+@keyframes swimAcross {
+  from { transform: translateX(-120px); }
+  to   { transform: translateX(calc(100vw + 120px)); }
+}
+@keyframes swimLeft {
+  from { transform: translateX(calc(100vw + 120px)); }
+  to   { transform: translateX(-120px); }
+}
+@keyframes riseUp {
+  0%   { transform: translateY(0) scale(1); opacity: 0.5; }
+  100% { transform: translateY(-100vh) scale(0.4); opacity: 0; }
+}
+@keyframes sway {
+  0%, 100% { transform: rotate(-6deg); transform-origin: bottom center; }
+  50%       { transform: rotate(6deg);  transform-origin: bottom center; }
+}
+@keyframes lightRay {
+  0%, 100% { opacity: 0.04; }
+  50%       { opacity: 0.09; }
+}
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(51,104,198,0.4); }
+  50%       { box-shadow: 0 0 40px rgba(51,104,198,0.8); }
+}
+
+/* ── Student page backgrounds ─────────────────────────────── */
+.bg-ocean-deep {
+  background: linear-gradient(to bottom, #020a18 0%, #03152e 15%, #051e45 40%, #083560 70%, #0a3d55 100%);
+}
+.bg-ocean-quiz {
+  background: linear-gradient(to bottom, #0f0a02 0%, #1a1005 15%, #2a1e08 35%, #1e2e0a 60%, #0a2e1e 100%);
+}
+.bg-ocean-dark {
+  background: linear-gradient(to bottom, #020a18 0%, #03152e 15%, #051e45 40%, #083560 100%);
+}
+
+/* ── Student frame / vignette ─────────────────────────────── */
+.student-vignette {
+  box-shadow: inset 0 0 0 12px #080f1e, inset 0 0 0 16px #111e30, inset 0 0 120px 60px rgba(0,4,12,0.85);
+}
+.student-vignette-gold {
+  box-shadow: inset 0 0 0 12px #100800, inset 0 0 0 16px #1a1005, inset 0 0 120px 60px rgba(10,4,0,0.85);
+}
+.frame-bolt {
+  background: radial-gradient(circle at 35% 30%, #8896a8, #3a4555);
+  border: 1.5px solid #5a6575;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.7);
+}
+.frame-bolt-gold {
+  background: radial-gradient(circle at 35% 30%, #a89060, #554030);
+  border: 1.5px solid #7a6045;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.7);
+}
+
+/* ── HUD panels ───────────────────────────────────────────── */
+.hud-panel {
+  background: rgba(8,16,32,0.8);
+}
+.hud-stars {
+  background: rgba(8,16,32,0.8);
+  border: 1px solid rgba(251,191,36,0.2);
+}
+
+/* ── Student cards ────────────────────────────────────────── */
+.ocean-card {
+  background: linear-gradient(145deg, #0d1f3c, #0a1628);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.6);
+}
+.card-bolt {
+  background: radial-gradient(circle at 35% 30%, #8896a8, #3a4555);
+  border: 1px solid #5a6575;
+}
+.scanline {
+  background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.07) 3px, rgba(0,0,0,0.07) 4px);
+}
+
+/* ── Student info panels ──────────────────────────────────── */
+.glass-panel {
+  background: rgba(8,16,32,0.7);
+  border: 1px solid rgba(255,255,255,0.07);
+}
+.glass-panel-dark {
+  background: rgba(8,16,32,0.8);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+/* ── Quiz session ─────────────────────────────────────────── */
+.quiz-question-box {
+  background: rgba(8,16,32,0.8);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+}
+.quiz-result-ring {
+  background: rgba(8,16,32,0.8);
+}
+.quiz-stars-box {
+  background: rgba(251,191,36,0.1);
+  border: 1px solid rgba(251,191,36,0.3);
+}
+
+/* ── Stats page ───────────────────────────────────────────── */
+.stat-card {
+  background: rgba(8,16,32,0.7);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
+}
+.attempt-row {
+  background: rgba(8,16,32,0.7);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+/* ── Profile page ─────────────────────────────────────────── */
+.shop-item {
+  background: rgba(8,16,32,0.6);
+  border: 1.5px solid rgba(255,255,255,0.07);
+}
+.avatar-preview {
+  background: rgba(8,16,32,0.7);
+  border: 1px solid rgba(255,255,255,0.07);
+}
+.save-btn {
+  background: linear-gradient(135deg, #DD6584, #b03060);
+  box-shadow: 0 4px 24px rgba(221,101,132,0.4), inset 0 1px 0 rgba(255,255,255,0.15);
+  color: #fff;
+}
+
+/* ── Light ray animation ──────────────────────────────────── */
+.light-ray {
+  background: linear-gradient(to bottom, rgba(255,255,255,0.05), transparent);
+  transform-origin: top center;
+  animation: lightRay 6s ease-in-out infinite;
+}
+.light-ray-gold {
+  background: linear-gradient(to bottom, rgba(246,173,85,0.06), transparent);
+  transform-origin: top center;
+  animation: lightRay 6s ease-in-out infinite;
+}
+.light-ray-purple {
+  background: linear-gradient(to bottom, rgba(124,58,237,0.05), transparent);
+  transform-origin: top center;
+  animation: lightRay 6s ease-in-out infinite;
+}
+.light-ray-pink {
+  background: linear-gradient(to bottom, rgba(221,101,132,0.05), transparent);
+  transform-origin: top center;
+  animation: lightRay 6s ease-in-out infinite;
+}

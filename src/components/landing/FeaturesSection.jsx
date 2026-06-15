@@ -76,11 +76,11 @@ const FeaturesSection = () => {
               key={index}
               className={`reveal reveal-delay-${(index % 4) + 1} group p-8 rounded-3xl border-2 ${feature.border} hover:shadow-xl hover:-translate-y-2 transition-all duration-300 bg-white`}
             >
-              <div className={`w-14 h-14 rounded-2xl ${feature.color} flex items-center justify-center text-2xl mb-5 group-hover:scale-110 transition-transform duration-300`}>
+              <div className={`w-14 h-14 rounded-2xl ${feature.color} flex items-center justify-center text-2xl mb-5 mx-auto group-hover:scale-110 transition-transform duration-300`}>
                 {feature.icon}
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">{feature.title}</h3>
-              <p className="text-gray-500 leading-relaxed">{feature.description}</p>
+              <h3 className="text-xl font-bold text-gray-900 mb-3 text-center">{feature.title}</h3>
+              <p className="text-gray-500 leading-relaxed text-center">{feature.description}</p>
             </div>
           ))}
         </div>

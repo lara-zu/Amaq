@@ -76,3 +76,28 @@ body {
 .reveal-delay-2 { transition-delay: 0.2s; }
 .reveal-delay-3 { transition-delay: 0.3s; }
 .reveal-delay-4 { transition-delay: 0.4s; }
+
+@keyframes swimAcross {
+  from { transform: translateX(-120px); }
+  to   { transform: translateX(calc(100vw + 120px)); }
+}
+@keyframes swimLeft {
+  from { transform: translateX(calc(100vw + 120px)); }
+  to   { transform: translateX(-120px); }
+}
+@keyframes riseUp {
+  0%   { transform: translateY(0) scale(1); opacity: 0.5; }
+  100% { transform: translateY(-100vh) scale(0.4); opacity: 0; }
+}
+@keyframes sway {
+  0%, 100% { transform: rotate(-6deg); transform-origin: bottom center; }
+  50%       { transform: rotate(6deg);  transform-origin: bottom center; }
+}
+@keyframes lightRay {
+  0%, 100% { opacity: 0.04; }
+  50%       { opacity: 0.09; }
+}
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(51,104,198,0.4); }
+  50%       { box-shadow: 0 0 40px rgba(51,104,198,0.8); }
+}

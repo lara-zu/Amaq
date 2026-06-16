@@ -2,17 +2,7 @@ import { useState, useEffect } from "react";
 import StudentFrame from "../../components/student/shared/StudentFrame";
 import StudentPageHeader from "../../components/student/shared/StudentPageHeader";
 import QuizCard from "../../components/student/quizzes/QuizCard";
-
-const MOCK_QUIZZES = [
-  { id: 1, title: "Algebra Fundamentals", subject: "Algebra",    questions_count: 5,  stars_reward: 5  },
-  { id: 2, title: "Pythagorean Theorem",  subject: "Geometry",   questions_count: 6,  stars_reward: 6  },
-  { id: 3, title: "Linear Equations",     subject: "Algebra",    questions_count: 8,  stars_reward: 8  },
-  { id: 4, title: "Circle Theorems",      subject: "Geometry",   questions_count: 5,  stars_reward: 5  },
-  { id: 5, title: "Fractions Sprint",     subject: "Arithmetic", questions_count: 10, stars_reward: 10 },
-  { id: 6, title: "Probability Basics",   subject: "Statistics", questions_count: 6,  stars_reward: 6  },
-  { id: 7, title: "Coordinate Geometry",  subject: "Geometry",   questions_count: 7,  stars_reward: 7  },
-  { id: 8, title: "Number Patterns",      subject: "Arithmetic", questions_count: 5,  stars_reward: 5  },
-];
+import API_URL from "../../api.js";
 
 const StudentQuizzesPage = ({ user }) => {
   const [quizzes, setQuizzes] = useState([]);
@@ -22,12 +12,13 @@ const StudentQuizzesPage = ({ user }) => {
   const fetchQuizzes = async () => {
     setLoading(true);
     try {
-      const result = await fetch("http://localhost:5000/api/quizzes");
-      if (!result.ok) throw new Error("Failed to fetch");
+      const grade = user?.grade ? `?grade=${user.grade}` : "";
+      const result = await fetch(`${API_URL}/api/quizzes${grade}`);
+      if (!result.ok) throw new Error("Failed to fetch quizzes.");
       const data = await result.json();
       setQuizzes(data);
     } catch (err) {
-      setQuizzes(MOCK_QUIZZES);
+      setError("Failed to load quizzes. Make sure the server is running.");
     } finally {
       setLoading(false);
     }
@@ -59,7 +50,7 @@ const StudentQuizzesPage = ({ user }) => {
           )}
 
           {error && (
-            <p className="text-red-400 text-center py-12 tracking-wide">Error: {error}</p>
+            <p className="text-red-400 text-center py-12 tracking-wide">{error}</p>
           )}
 
           {!loading && !error && (

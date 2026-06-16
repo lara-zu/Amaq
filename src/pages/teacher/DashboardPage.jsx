@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import API_URL from "../../api.js";
 
 const trendUp = (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -44,9 +45,9 @@ const DashboardPage = ({ user }) => {
     setLoading(true);
     try {
       const [sRes, lRes, qRes] = await Promise.all([
-        fetch("http://localhost:5000/api/users"),
-        fetch("http://localhost:5000/api/lessons"),
-        fetch("http://localhost:5000/api/quizzes"),
+        fetch(`${API_URL}/api/users`, { headers: { "x-role": user.role } }),
+        fetch(`${API_URL}/api/lessons`),
+        fetch(`${API_URL}/api/quizzes`),
       ]);
       const [sData, lData, qData] = await Promise.all([sRes.json(), lRes.json(), qRes.json()]);
       setStudents(Array.isArray(sData) ? sData.filter((u) => u.role === "student") : []);

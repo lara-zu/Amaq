@@ -202,6 +202,29 @@ body {
   color: #fff;
 }
 
+/* ── Video embed (16:9 responsive) ───────────────────────── */
+.video-embed-wrapper {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 8px 48px rgba(0,0,0,0.7);
+}
+.video-embed-wrapper iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Progress bar track ───────────────────────────────────── */
+.progress-bar-track {
+  background: rgba(255,255,255,0.08);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
 /* ── Light ray animation ──────────────────────────────────── */
 .light-ray {
   background: linear-gradient(to bottom, rgba(255,255,255,0.05), transparent);

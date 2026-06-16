@@ -2,17 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import StudentFrame from "../../components/student/shared/StudentFrame";
 import StudentPageHeader from "../../components/student/shared/StudentPageHeader";
-
-const MOCK_LESSONS = [
-  { id: 1, title: "Introduction to Algebra",   subject: "Algebra",    youtube_url: "https://www.youtube.com/watch?v=NybHckSEQBI", description: "Learn the basics of algebraic expressions and equations.", quiz_id: 1 },
-  { id: 2, title: "Pythagorean Theorem",        subject: "Geometry",   youtube_url: "https://www.youtube.com/watch?v=AA6RfgP-AHU", description: "Discover the relationship between sides of a right triangle.", quiz_id: 2 },
-  { id: 3, title: "Fractions & Decimals",       subject: "Arithmetic", youtube_url: "https://www.youtube.com/watch?v=3minq9_ob-k", description: "Master converting and computing with fractions and decimals.", quiz_id: null },
-  { id: 4, title: "Linear Equations",           subject: "Algebra",    youtube_url: "https://www.youtube.com/watch?v=9IUEk9fn2Vs", description: "Solve for x and understand the slope-intercept form.", quiz_id: 3 },
-  { id: 5, title: "Area & Perimeter",           subject: "Geometry",   youtube_url: "https://www.youtube.com/watch?v=AAB0WhKWkmo", description: "Calculate areas and perimeters of common 2D shapes.", quiz_id: null },
-  { id: 6, title: "Probability Basics",         subject: "Statistics", youtube_url: "https://www.youtube.com/watch?v=KzfWUEJjG18", description: "Understand chance, outcomes, and basic probability rules.", quiz_id: null },
-  { id: 7, title: "Multiplication & Division",  subject: "Arithmetic", youtube_url: "https://www.youtube.com/watch?v=mvOkMYCygps", description: "Strengthen your multiplication tables and long division skills.", quiz_id: null },
-  { id: 8, title: "Angles & Triangles",         subject: "Geometry",   youtube_url: "https://www.youtube.com/watch?v=mLeNaZD2sMQ", description: "Explore types of angles and triangle classification.", quiz_id: null },
-];
+import API_URL from "../../api.js";
 
 const SUBJECT_COLORS = {
   Algebra:    "#63B3ED",
@@ -22,7 +12,7 @@ const SUBJECT_COLORS = {
 };
 
 const getYouTubeId = (url) => {
-  const match = url.match(/(?:v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+  const match = url?.match(/(?:v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
   return match ? match[1] : null;
 };
 
@@ -36,14 +26,12 @@ const StudentLessonDetailPage = ({ user }) => {
   const fetchLesson = async () => {
     setLoading(true);
     try {
-      const result = await fetch(`http://localhost:5000/api/lessons/${id}`);
-      if (!result.ok) throw new Error("Not found");
+      const result = await fetch(`${API_URL}/api/lessons/${id}`);
+      if (!result.ok) throw new Error("Lesson not found.");
       const data = await result.json();
       setLesson(data);
     } catch (err) {
-      const found = MOCK_LESSONS.find((l) => l.id === parseInt(id));
-      if (found) setLesson(found);
-      else setError("Lesson not found.");
+      setError("Lesson not found.");
     } finally {
       setLoading(false);
     }
@@ -77,7 +65,7 @@ const StudentLessonDetailPage = ({ user }) => {
       <div className="relative z-20">
         <StudentPageHeader
           title={lesson.title}
-          subtitle={lesson.subject}
+          subtitle={lesson.subject || "Lesson"}
           backTo="/student/lessons"
           stars={user?.stars ?? 0}
           accentColor={color}
@@ -86,15 +74,10 @@ const StudentLessonDetailPage = ({ user }) => {
         <div className="px-10 pb-12 max-w-4xl mx-auto">
           {videoId && (
             <div
-              className="relative w-full rounded-2xl overflow-hidden mb-6"
-              style={{
-                paddingBottom: "56.25%",
-                border: `1.5px solid ${color}33`,
-                boxShadow: "0 8px 48px rgba(0,0,0,0.7)",
-              }}
+              className="video-embed-wrapper mb-6"
+              style={{ border: `1.5px solid ${color}33` }}
             >
               <iframe
-                className="absolute inset-0 w-full h-full"
                 src={`https://www.youtube.com/embed/${videoId}`}
                 title={lesson.title}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -103,9 +86,11 @@ const StudentLessonDetailPage = ({ user }) => {
             </div>
           )}
 
-          <div className="rounded-xl px-5 py-4 mb-6 glass-panel">
-            <p className="text-white/60 text-sm leading-relaxed">{lesson.description}</p>
-          </div>
+          {lesson.description && (
+            <div className="rounded-xl px-5 py-4 mb-6 glass-panel">
+              <p className="text-white/60 text-sm leading-relaxed">{lesson.description}</p>
+            </div>
+          )}
 
           {lesson.quiz_id && (
             <button

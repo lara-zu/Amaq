@@ -1,40 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import StudentFrame from "../../components/student/shared/StudentFrame";
-
-const MOCK_QUIZZES = {
-  1: {
-    id: 1, title: "Algebra Fundamentals", subject: "Algebra",
-    questions: [
-      { id: 1, question_text: "What is the value of x in: 2x + 4 = 10?", option_a: "2", option_b: "3", option_c: "4", option_d: "5", correct_option: "b" },
-      { id: 2, question_text: "Simplify: 3a + 2b + 5a - b", option_a: "8a + b", option_b: "8a - b", option_c: "8a + 3b", option_d: "2a + b", correct_option: "a" },
-      { id: 3, question_text: "What is 4² - 2³?", option_a: "6", option_b: "8", option_c: "10", option_d: "12", correct_option: "b" },
-      { id: 4, question_text: "If y = 3x and x = 4, what is y?", option_a: "7", option_b: "10", option_c: "12", option_d: "16", correct_option: "c" },
-      { id: 5, question_text: "What is the slope of y = 2x + 5?", option_a: "5", option_b: "2", option_c: "7", option_d: "1", correct_option: "b" },
-    ],
-  },
-  2: {
-    id: 2, title: "Pythagorean Theorem", subject: "Geometry",
-    questions: [
-      { id: 1, question_text: "In a right triangle with legs 3 and 4, what is the hypotenuse?", option_a: "5", option_b: "6", option_c: "7", option_d: "8", correct_option: "a" },
-      { id: 2, question_text: "Which formula represents the Pythagorean theorem?", option_a: "a² - b² = c²", option_b: "a + b = c", option_c: "a² + b² = c²", option_d: "a × b = c²", correct_option: "c" },
-      { id: 3, question_text: "If a = 5 and c = 13, what is b?", option_a: "10", option_b: "12", option_c: "8", option_d: "11", correct_option: "b" },
-      { id: 4, question_text: "Which set is a Pythagorean triple?", option_a: "2, 3, 4", option_b: "5, 12, 13", option_c: "4, 5, 6", option_d: "6, 8, 11", correct_option: "b" },
-      { id: 5, question_text: "A right triangle has legs 6 and 8. Find the hypotenuse.", option_a: "10", option_b: "12", option_c: "14", option_d: "9", correct_option: "a" },
-      { id: 6, question_text: "Is a triangle with sides 7, 24, 25 a right triangle?", option_a: "No", option_b: "Yes", option_c: "Only if acute", option_d: "Cannot tell", correct_option: "b" },
-    ],
-  },
-  3: {
-    id: 3, title: "Linear Equations", subject: "Algebra",
-    questions: [
-      { id: 1, question_text: "Solve: x + 7 = 15", option_a: "6", option_b: "7", option_c: "8", option_d: "9", correct_option: "c" },
-      { id: 2, question_text: "Solve: 3x = 21", option_a: "5", option_b: "6", option_c: "7", option_d: "8", correct_option: "c" },
-      { id: 3, question_text: "What is the y-intercept of y = 4x + 3?", option_a: "4", option_b: "3", option_c: "7", option_d: "1", correct_option: "b" },
-      { id: 4, question_text: "Solve: 2x - 6 = 10", option_a: "6", option_b: "7", option_c: "8", option_d: "9", correct_option: "c" },
-      { id: 5, question_text: "Which equation has solution x = 5?", option_a: "x + 3 = 7", option_b: "2x = 12", option_c: "x - 2 = 3", option_d: "3x = 20", correct_option: "c" },
-    ],
-  },
-};
+import API_URL from "../../api.js";
 
 const OPTION_COLORS = [
   { normal: "rgba(99,179,237,0.15)",  border: "#63B3ED" },
@@ -51,6 +18,7 @@ const StudentQuizSessionPage = ({ user, onUpdateUser }) => {
   const navigate    = useNavigate();
   const [quiz, setQuiz]         = useState(null);
   const [loading, setLoading]   = useState(false);
+  const [error, setError]       = useState(null);
   const [phase, setPhase]       = useState("loading");
   const [current, setCurrent]   = useState(0);
   const [selected, setSelected] = useState(null);
@@ -62,16 +30,15 @@ const StudentQuizSessionPage = ({ user, onUpdateUser }) => {
   const fetchQuiz = async () => {
     setLoading(true);
     try {
-      const result = await fetch(`http://localhost:5000/api/quizzes/${id}`);
-      if (!result.ok) throw new Error("Not found");
+      const result = await fetch(`${API_URL}/api/quizzes/${id}`);
+      if (!result.ok) throw new Error("Quiz not found.");
       const data = await result.json();
       setQuiz(data);
+      setPhase("playing");
     } catch (err) {
-      const found = MOCK_QUIZZES[parseInt(id)];
-      setQuiz(found || null);
+      setError("Quiz not found.");
     } finally {
       setLoading(false);
-      setPhase("playing");
     }
   };
 
@@ -112,9 +79,23 @@ const StudentQuizSessionPage = ({ user, onUpdateUser }) => {
   };
 
   const handleCollect = async () => {
-    if (onUpdateUser && user) {
-      const updated = { ...user, stars: (user.stars || 0) + score };
-      onUpdateUser(updated);
+    try {
+      const res = await fetch(`${API_URL}/api/attempts`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          student_id: user.id,
+          quiz_id: id,
+          score: score,
+          total_questions: quiz.questions.length,
+        }),
+      });
+      const data = await res.json();
+      if (data.user && onUpdateUser) {
+        onUpdateUser(data.user);
+      }
+    } catch (err) {
+      console.log(err);
     }
     navigate("/student/quizzes");
   };
@@ -125,9 +106,9 @@ const StudentQuizSessionPage = ({ user, onUpdateUser }) => {
     </div>
   );
 
-  if (!quiz) return (
+  if (error || !quiz) return (
     <div className="w-full min-h-screen flex items-center justify-center bg-ocean-dark">
-      <p className="text-red-400">Quiz not found.</p>
+      <p className="text-red-400">{error || "Quiz not found."}</p>
     </div>
   );
 
@@ -209,7 +190,7 @@ const StudentQuizSessionPage = ({ user, onUpdateUser }) => {
             </span>
             <span className="text-white/40 text-[10px] tracking-widest uppercase font-bold">Score: {score}</span>
           </div>
-          <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.08)" }}>
+          <div className="h-1.5 progress-bar-track">
             <div
               className="h-full rounded-full transition-all duration-300"
               style={{ width: `${(current / total) * 100}%`, background: "linear-gradient(to right, #63B3ED, #68D391)" }}

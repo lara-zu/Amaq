@@ -1,17 +1,19 @@
 import { useNavigate } from "react-router-dom";
 
-const SUBJECT_COLORS = {
-  Algebra:    { accent: "#63B3ED", dark: "#1a3a5c", glow: "rgba(99,179,237,0.5)"   },
-  Geometry:   { accent: "#F6AD55", dark: "#5c3d1a", glow: "rgba(246,173,85,0.5)"   },
-  Arithmetic: { accent: "#68D391", dark: "#1a4a2a", glow: "rgba(104,211,145,0.5)"  },
-  Statistics: { accent: "#FC8181", dark: "#5c1a1a", glow: "rgba(252,129,129,0.5)"  },
-};
+const CARD_COLORS = [
+  { accent: "#63B3ED", dark: "#1a3a5c", glow: "rgba(99,179,237,0.5)"   },
+  { accent: "#F6AD55", dark: "#5c3d1a", glow: "rgba(246,173,85,0.5)"   },
+  { accent: "#68D391", dark: "#1a4a2a", glow: "rgba(104,211,145,0.5)"  },
+  { accent: "#FC8181", dark: "#5c1a1a", glow: "rgba(252,129,129,0.5)"  },
+  { accent: "#B794F4", dark: "#3d1a5c", glow: "rgba(183,148,244,0.5)"  },
+  { accent: "#76E4F7", dark: "#1a4a5c", glow: "rgba(118,228,247,0.5)"  },
+];
 
 const BOLT_POSITIONS = ["top-2 left-2", "top-2 right-2", "bottom-2 left-2", "bottom-2 right-2"];
 
 const QuizCard = ({ quiz }) => {
   const navigate = useNavigate();
-  const color    = SUBJECT_COLORS[quiz.subject] || SUBJECT_COLORS["Algebra"];
+  const color    = CARD_COLORS[quiz.id % CARD_COLORS.length];
 
   return (
     <div

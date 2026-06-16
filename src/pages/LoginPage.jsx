@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import API_URL from "../api.js";
 
 const GRADES = [5, 6, 7, 8];
 
@@ -31,21 +32,12 @@ const LoginPage = ({ onLogin }) => {
     reader.readAsDataURL(file);
   };
 
-  const mockLogin = () => {
-    redirect({
-      id: 1, email, password, role,
-      firstName, lastName, birthday, avatar,
-      grade: role === "student" ? grade : null,
-      stars: 0,
-    });
-  };
-
   const handleLogin = async () => {
     setError(null);
     if (!email || !password) { setError("Please enter your email and password."); return; }
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/auth/login", {
+      const res = await fetch(`${API_URL}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -54,7 +46,7 @@ const LoginPage = ({ onLogin }) => {
       if (!res.ok) setError(data.message);
       else redirect(data.user);
     } catch (err) {
-      mockLogin();
+      setError("Could not connect to server. Make sure the backend is running.");
     } finally {
       setLoading(false);
     }
@@ -68,11 +60,11 @@ const LoginPage = ({ onLogin }) => {
     }
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/auth/signup", {
+      const res = await fetch(`${API_URL}/api/auth/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          email, password, role, firstName, lastName, birthday, avatar,
+          email, password, role, firstName, lastName,
           grade: role === "student" ? grade : null,
         }),
       });
@@ -80,7 +72,7 @@ const LoginPage = ({ onLogin }) => {
       if (!res.ok) setError(data.message);
       else redirect(data.user);
     } catch (err) {
-      mockLogin();
+      setError("Could not connect to server. Make sure the backend is running.");
     } finally {
       setLoading(false);
     }

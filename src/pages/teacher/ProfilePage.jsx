@@ -1,4 +1,5 @@
 import { useState } from "react";
+import API_URL from "../../api.js";
 
 const ProfilePage = ({ user, onUpdateUser }) => {
   const [firstName, setFirstName] = useState(user?.firstName || "");
@@ -22,7 +23,7 @@ const ProfilePage = ({ user, onUpdateUser }) => {
     setError(null);
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:5000/api/users/${user.id}`, {
+      const res = await fetch(`${API_URL}/api/users/${user.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json", "x-role": user.role },
         body: JSON.stringify({ firstName, lastName, birthday, avatar }),

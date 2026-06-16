@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import API_URL from "../../api.js";
 
 const StudentsPage = ({ user }) => {
   const [students, setStudents] = useState([]);
@@ -9,7 +10,9 @@ const StudentsPage = ({ user }) => {
   const fetchStudents = async () => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/users");
+      const res = await fetch(`${API_URL}/api/users`, {
+        headers: { "x-role": user.role },
+      });
       const data = await res.json();
       setStudents(Array.isArray(data) ? data.filter((u) => u.role === "student") : []);
     } catch (err) {
@@ -23,7 +26,7 @@ const StudentsPage = ({ user }) => {
 
   const deleteStudent = async (id) => {
     if (!window.confirm("Remove this student from the class?")) return;
-    await fetch(`http://localhost:5000/api/users/${id}`, {
+    await fetch(`${API_URL}/api/users/${id}`, {
       method: "DELETE",
       headers: { "x-role": user.role },
     });

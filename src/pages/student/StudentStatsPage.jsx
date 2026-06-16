@@ -1,13 +1,8 @@
 import { useState, useEffect } from "react";
 import StudentFrame from "../../components/student/shared/StudentFrame";
 import StudentPageHeader from "../../components/student/shared/StudentPageHeader";
-
-const MOCK_ATTEMPTS = [
-  { id: 1, quiz_title: "Algebra Fundamentals", subject: "Algebra",    score: 4, total_questions: 5,  stars_earned: 4, attempted_at: "2026-06-14T10:30:00Z" },
-  { id: 2, quiz_title: "Pythagorean Theorem",  subject: "Geometry",   score: 5, total_questions: 6,  stars_earned: 5, attempted_at: "2026-06-13T14:15:00Z" },
-  { id: 3, quiz_title: "Linear Equations",     subject: "Algebra",    score: 3, total_questions: 8,  stars_earned: 3, attempted_at: "2026-06-12T09:00:00Z" },
-  { id: 4, quiz_title: "Fractions Sprint",     subject: "Arithmetic", score: 8, total_questions: 10, stars_earned: 8, attempted_at: "2026-06-11T16:45:00Z" },
-];
+import StatCard from "../../components/student/shared/StatCard";
+import API_URL from "../../api.js";
 
 const SUBJECT_COLORS = {
   Algebra:    "#63B3ED",
@@ -15,14 +10,6 @@ const SUBJECT_COLORS = {
   Arithmetic: "#68D391",
   Statistics: "#FC8181",
 };
-
-const StatCard = ({ label, value, icon, color }) => (
-  <div className="stat-card flex flex-col items-center gap-2 px-6 py-5 rounded-2xl" style={{ border: `1px solid ${color}33` }}>
-    <span className="text-3xl">{icon}</span>
-    <span className="text-3xl font-black text-white" style={{ textShadow: `0 0 20px ${color}66` }}>{value}</span>
-    <span className="text-[10px] font-bold tracking-[0.2em] uppercase" style={{ color: `${color}99` }}>{label}</span>
-  </div>
-);
 
 const StudentStatsPage = ({ user }) => {
   const [attempts, setAttempts] = useState([]);
@@ -32,12 +19,12 @@ const StudentStatsPage = ({ user }) => {
   const fetchAttempts = async () => {
     setLoading(true);
     try {
-      const result = await fetch(`http://localhost:5000/api/attempts?student_id=${user?.id}`);
-      if (!result.ok) throw new Error("Failed");
+      const result = await fetch(`${API_URL}/api/attempts/${user?.id}`);
+      if (!result.ok) throw new Error("Failed to fetch attempts.");
       const data = await result.json();
       setAttempts(data);
     } catch (err) {
-      setAttempts(MOCK_ATTEMPTS);
+      setError("Failed to load stats. Make sure the server is running.");
     } finally {
       setLoading(false);
     }
@@ -87,7 +74,11 @@ const StudentStatsPage = ({ user }) => {
             </div>
           )}
 
-          {!loading && attempts.length === 0 && (
+          {error && (
+            <p className="text-red-400 text-center py-12">{error}</p>
+          )}
+
+          {!loading && !error && attempts.length === 0 && (
             <div className="text-center py-12 rounded-2xl glass-panel">
               <p className="text-white/25 tracking-widest uppercase text-sm">No quizzes taken yet.</p>
             </div>
@@ -106,7 +97,7 @@ const StudentStatsPage = ({ user }) => {
                   </div>
                   <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
                     <span className="text-white font-black text-sm">{attempt.score}/{attempt.total_questions}</span>
-                    <div className="w-24 h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.08)" }}>
+                    <div className="w-24 h-1.5 progress-bar-track">
                       <div className="h-full rounded-full" style={{ width: `${pct}%`, background: color }} />
                     </div>
                   </div>
